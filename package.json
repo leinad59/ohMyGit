@@ -2,7 +2,7 @@
   "name": "ohmygit",
   "displayName": "Oh My Git",
   "description": "在Git记录中内联显示TXT文件内容，支持翻页阅读",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -35,7 +35,8 @@
       {
         "command": "ohmygit.configureTxtPath",
         "title": "配置TXT文件路径",
-        "category": "Oh My Git"
+        "category": "Oh My Git",
+        "icon": "$(file)"
       },
       {
         "command": "ohmygit.showConfig",
@@ -127,6 +128,11 @@
     },
     "menus": {
       "view/title": [
+        {
+          "command": "ohmygit.configureTxtPath",
+          "when": "view == ohmygit.gitHistoryView",
+          "group": "navigation@0"
+        },
         {
           "command": "ohmygit.firstPage",
           "when": "view == ohmygit.gitHistoryView",
