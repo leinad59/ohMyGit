@@ -59,7 +59,7 @@
 | 配置项 | 描述 | 默认值 |
 |--------|------|--------|
 | `ohmygit.txtFilePath` | TXT文件路径 | "" |
-| `ohmygit.pageSize` | 每页显示字符数 | 200 |
+| `ohmygit.pageSize` | 每页显示字符数 | 30 |
 
 ### 快捷键
 

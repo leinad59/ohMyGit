@@ -180,7 +180,7 @@
         },
         "ohmygit.pageSize": {
           "type": "number",
-          "default": 200,
+          "default": 30,
           "description": "每页显示的字符数"
         }
       }

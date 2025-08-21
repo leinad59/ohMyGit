@@ -22,7 +22,7 @@ export class ConfigManager {
     // 获取每页显示字符数
     getPageSize(): number {
         const config = vscode.workspace.getConfiguration(this.configSection);
-        return config.get<number>('pageSize', 200);
+        return config.get<number>('pageSize', 30);
     }
 
     // 设置每页显示字符数
@@ -80,7 +80,7 @@ export class ConfigManager {
     async resetConfiguration(): Promise<void> {
         const config = vscode.workspace.getConfiguration(this.configSection);
         await config.update('txtFilePath', '', vscode.ConfigurationTarget.Workspace);
-        await config.update('pageSize', 200, vscode.ConfigurationTarget.Workspace);
+        await config.update('pageSize', 30, vscode.ConfigurationTarget.Workspace);
         this.updateConfiguration();
     }
 
