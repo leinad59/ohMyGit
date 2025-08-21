@@ -1,0 +1,216 @@
+{
+  "name": "ohmygit",
+  "displayName": "Oh My Git",
+  "description": "在Git记录中内联显示TXT文件内容，支持翻页阅读",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "SCM Providers",
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:ohmygit.showGitHistory",
+    "onView:ohmygit.gitHistoryView"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "ohmygit.showGitHistory",
+        "title": "显示Git历史记录",
+        "category": "Oh My Git"
+      },
+      {
+        "command": "ohmygit.nextPage",
+        "title": "下一页",
+        "category": "Oh My Git"
+      },
+      {
+        "command": "ohmygit.previousPage",
+        "title": "上一页",
+        "category": "Oh My Git"
+      },
+      {
+        "command": "ohmygit.configureTxtPath",
+        "title": "配置TXT文件路径",
+        "category": "Oh My Git"
+      },
+      {
+        "command": "ohmygit.showConfig",
+        "title": "显示配置信息",
+        "category": "Oh My Git"
+      },
+      {
+        "command": "ohmygit.refreshConfig",
+        "title": "刷新配置",
+        "category": "Oh My Git",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "ohmygit.firstPage",
+        "title": "第一页",
+        "category": "Oh My Git",
+        "icon": "$(arrow-left)"
+      },
+      {
+        "command": "ohmygit.previousPageBtn",
+        "title": "上一页",
+        "category": "Oh My Git",
+        "icon": "$(chevron-left)"
+      },
+      {
+        "command": "ohmygit.nextPageBtn",
+        "title": "下一页",
+        "category": "Oh My Git",
+        "icon": "$(chevron-right)"
+      },
+      {
+        "command": "ohmygit.lastPage",
+        "title": "最后一页",
+        "category": "Oh My Git",
+        "icon": "$(arrow-right)"
+      },
+      {
+        "command": "ohmygit.goToPage",
+        "title": "跳转到页面",
+        "category": "Oh My Git",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "ohmygit.toggleHiddenMode",
+        "title": "隐藏/显示TXT内容",
+        "category": "Oh My Git",
+        "icon": "$(eye)"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "ohmygit.nextPage",
+        "key": "ctrl+right",
+        "when": "ohmygit.gitHistoryView"
+      },
+      {
+        "command": "ohmygit.previousPage",
+        "key": "ctrl+left",
+        "when": "ohmygit.gitHistoryView"
+      },
+      {
+        "command": "ohmygit.nextPage",
+        "key": "cmd+right",
+        "when": "ohmygit.gitHistoryView"
+      },
+      {
+        "command": "ohmygit.previousPage",
+        "key": "cmd+left",
+        "when": "ohmygit.gitHistoryView"
+      },
+      {
+        "command": "ohmygit.toggleHiddenMode",
+        "key": "ctrl+h",
+        "when": "ohmygit.gitHistoryView"
+      },
+      {
+        "command": "ohmygit.toggleHiddenMode",
+        "key": "cmd+h",
+        "when": "ohmygit.gitHistoryView"
+      }
+    ],
+    "views": {
+      "scm": [
+        {
+          "id": "ohmygit.gitHistoryView",
+          "name": "Git历史记录"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "ohmygit.firstPage",
+          "when": "view == ohmygit.gitHistoryView",
+          "group": "navigation@1"
+        },
+        {
+          "command": "ohmygit.previousPageBtn",
+          "when": "view == ohmygit.gitHistoryView",
+          "group": "navigation@2"
+        },
+        {
+          "command": "ohmygit.nextPageBtn",
+          "when": "view == ohmygit.gitHistoryView",
+          "group": "navigation@3"
+        },
+        {
+          "command": "ohmygit.lastPage",
+          "when": "view == ohmygit.gitHistoryView",
+          "group": "navigation@4"
+        },
+        {
+          "command": "ohmygit.refreshConfig",
+          "when": "view == ohmygit.gitHistoryView",
+          "group": "navigation@5"
+        },
+        {
+          "command": "ohmygit.goToPage",
+          "when": "view == ohmygit.gitHistoryView",
+          "group": "navigation@6"
+        },
+        {
+          "command": "ohmygit.toggleHiddenMode",
+          "when": "view == ohmygit.gitHistoryView",
+          "group": "navigation@7"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Oh My Git",
+      "properties": {
+        "ohmygit.txtFilePath": {
+          "type": "string",
+          "default": "",
+          "description": "要显示的TXT文件路径"
+        },
+        "ohmygit.pageSize": {
+          "type": "number",
+          "default": 200,
+          "description": "每页显示的字符数"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "@typescript-eslint/parser": "^5.42.0",
+    "eslint": "^8.26.0",
+    "typescript": "^4.8.4"
+  },
+  "dependencies": {
+    "simple-git": "^3.16.0"
+  },
+  "keywords": [
+    "git",
+    "scm",
+    "txt",
+    "reader",
+    "history"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "publisher": ""
+}
