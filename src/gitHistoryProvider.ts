@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { simpleGit } from 'simple-git';
 import { GitRecordItem } from './types/gitTypes';
 import { ConfigManager } from './configManager';
 import { TxtContentManager } from './txtContentManager';
@@ -111,7 +112,6 @@ export class GitHistoryProvider implements vscode.TreeDataProvider<GitRecordItem
             }
 
             const workspaceRoot = workspaceFolders[0].uri.fsPath;
-            const { simpleGit } = await import('simple-git');
             const git = simpleGit(workspaceRoot);
 
             // 检查是否为Git仓库
@@ -146,7 +146,23 @@ export class GitHistoryProvider implements vscode.TreeDataProvider<GitRecordItem
 
         } catch (error) {
             console.error('加载Git历史记录失败:', error);
-            vscode.window.showErrorMessage('加载Git历史记录失败');
+            
+            // 区分不同类型的错误并提供更详细的错误信息
+            let errorMessage = '加载Git历史记录失败';
+            
+            if (error instanceof Error) {
+                if (error.message.includes('Cannot find module') || error.message.includes('simple-git')) {
+                    errorMessage = 'Git模块加载失败，请检查扩展安装是否完整';
+                } else if (error.message.includes('ENOENT') || error.message.includes('not found')) {
+                    errorMessage = 'Git仓库路径不存在或无法访问';
+                } else if (error.message.includes('not a git repository')) {
+                    errorMessage = '当前工作区不是Git仓库';
+                } else {
+                    errorMessage = `Git操作失败: ${error.message}`;
+                }
+            }
+            
+            vscode.window.showErrorMessage(errorMessage);
             this.gitRecords = [];
         }
     }
