@@ -182,6 +182,55 @@ export function activate(context: vscode.ExtensionContext) {
         }
     );
 
+    // 文本搜索与跳转命令
+    const searchFirstCommand = vscode.commands.registerCommand(
+        'ohmygit.searchFirst',
+        async () => {
+            const currentItem = gitHistoryProvider.getCurrentReadingItem();
+            if (currentItem && currentItem.isReadingTxt) {
+                await gitHistoryProvider.searchFirst(currentItem);
+            } else {
+                vscode.window.showInformationMessage('请先选择一个正在阅读的Git记录');
+            }
+        }
+    );
+
+    const searchPreviousCommand = vscode.commands.registerCommand(
+        'ohmygit.searchPrevious',
+        async () => {
+            const currentItem = gitHistoryProvider.getCurrentReadingItem();
+            if (currentItem && currentItem.isReadingTxt) {
+                await gitHistoryProvider.searchPrevious(currentItem);
+            } else {
+                vscode.window.showInformationMessage('请先选择一个正在阅读的Git记录');
+            }
+        }
+    );
+
+    const searchNextCommand = vscode.commands.registerCommand(
+        'ohmygit.searchNext',
+        async () => {
+            const currentItem = gitHistoryProvider.getCurrentReadingItem();
+            if (currentItem && currentItem.isReadingTxt) {
+                await gitHistoryProvider.searchNext(currentItem);
+            } else {
+                vscode.window.showInformationMessage('请先选择一个正在阅读的Git记录');
+            }
+        }
+    );
+
+    const searchLastCommand = vscode.commands.registerCommand(
+        'ohmygit.searchLast',
+        async () => {
+            const currentItem = gitHistoryProvider.getCurrentReadingItem();
+            if (currentItem && currentItem.isReadingTxt) {
+                await gitHistoryProvider.searchLast(currentItem);
+            } else {
+                vscode.window.showInformationMessage('请先选择一个正在阅读的Git记录');
+            }
+        }
+    );
+
     // 将命令添加到上下文
     context.subscriptions.push(
         gitHistoryView,
@@ -197,7 +246,11 @@ export function activate(context: vscode.ExtensionContext) {
         nextPageBtnCommand,
         lastPageCommand,
         goToPageCommand,
-        toggleHiddenModeCommand
+        toggleHiddenModeCommand,
+        searchFirstCommand,
+        searchPreviousCommand,
+        searchNextCommand,
+        searchLastCommand
     );
 
     // 监听配置变化

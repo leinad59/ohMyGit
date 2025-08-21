@@ -16,6 +16,7 @@ export class GitHistoryProvider implements vscode.TreeDataProvider<GitRecordItem
     private readingProgress: Map<string, { currentPage: number; totalPages: number }> = new Map();
     private context: vscode.ExtensionContext | undefined;
     private isHiddenMode: boolean = false;
+    private searchState: Map<string, { query: string; indices: number[]; current: number }> = new Map();
 
     constructor(configManager: ConfigManager, context?: vscode.ExtensionContext) {
         this.configManager = configManager;
@@ -342,5 +343,165 @@ export class GitHistoryProvider implements vscode.TreeDataProvider<GitRecordItem
         }
         
         this.updateItem(item);
+    }
+
+    // ===== 文本搜索与跳转 =====
+    private findAllOccurrences(haystack: string, needle: string): number[] {
+        const indices: number[] = [];
+        if (!needle) {
+            return indices;
+        }
+        let startIndex = 0;
+        while (startIndex <= haystack.length - needle.length) {
+            const foundIndex = haystack.indexOf(needle, startIndex);
+            if (foundIndex === -1) {
+                break;
+            }
+            indices.push(foundIndex);
+            startIndex = foundIndex + Math.max(needle.length, 1);
+        }
+        return indices;
+    }
+
+    private async ensureSearchState(item: GitRecordItem, query?: string): Promise<{ query: string; indices: number[]; current: number } | null> {
+        const txtPath = item.associatedTxtPath;
+        if (!txtPath) {
+            return null;
+        }
+        if (!query) {
+            const existing = this.searchState.get(txtPath);
+            if (existing) {
+                return existing;
+            }
+        }
+
+        const content = await this.txtContentManager.loadFile(txtPath);
+        const q = (query ?? '').trim();
+        if (!q) {
+            return null;
+        }
+        const indices = this.findAllOccurrences(content, q);
+        const state = { query: q, indices, current: indices.length > 0 ? 0 : -1 };
+        this.searchState.set(txtPath, state);
+        return state;
+    }
+
+    private async jumpToOccurrence(item: GitRecordItem, indexInContent: number): Promise<void> {
+        const pageSize = this.configManager.getPageSize();
+        const pageNumber = Math.floor(indexInContent / pageSize) + 1;
+        await this.goToPage(item, pageNumber);
+    }
+
+    async searchFirst(item: GitRecordItem): Promise<void> {
+        if (!item.isReadingTxt) {
+            vscode.window.showInformationMessage('请先开始阅读TXT内容');
+            return;
+        }
+        const totalPages = item.totalPages || 1;
+        const input = await vscode.window.showInputBox({
+            prompt: `输入要搜索的文本（跳转到第一处）`,
+            placeHolder: '输入关键字...',
+            validateInput: (val) => val.trim().length === 0 ? '请输入非空文本' : null
+        });
+        if (input === undefined) {
+            return;
+        }
+        const state = await this.ensureSearchState(item, input);
+        if (!state) {
+            return;
+        }
+        if (state.indices.length === 0) {
+            vscode.window.showInformationMessage('未找到匹配内容');
+            return;
+        }
+        state.current = 0;
+        await this.jumpToOccurrence(item, state.indices[state.current]);
+        vscode.window.setStatusBarMessage(`已跳转到第 1/${state.indices.length} 处（共${totalPages}页）`, 2000);
+    }
+
+    async searchNext(item: GitRecordItem): Promise<void> {
+        if (!item.isReadingTxt) {
+            vscode.window.showInformationMessage('请先开始阅读TXT内容');
+            return;
+        }
+        const txtPath = item.associatedTxtPath;
+        if (!txtPath) {
+            return;
+        }
+        let state = this.searchState.get(txtPath);
+        if (!state) {
+            await this.searchFirst(item);
+            state = this.searchState.get(txtPath);
+            if (!state) {
+                return;
+            }
+        }
+        if (state.indices.length === 0) {
+            vscode.window.showInformationMessage('未找到匹配内容');
+            return;
+        }
+        if (state.current < state.indices.length - 1) {
+            state.current += 1;
+            await this.jumpToOccurrence(item, state.indices[state.current]);
+            vscode.window.setStatusBarMessage(`已跳转到第 ${state.current + 1}/${state.indices.length} 处`, 2000);
+        } else {
+            vscode.window.showInformationMessage('已经是最后一处');
+        }
+    }
+
+    async searchPrevious(item: GitRecordItem): Promise<void> {
+        if (!item.isReadingTxt) {
+            vscode.window.showInformationMessage('请先开始阅读TXT内容');
+            return;
+        }
+        const txtPath = item.associatedTxtPath;
+        if (!txtPath) {
+            return;
+        }
+        let state = this.searchState.get(txtPath);
+        if (!state) {
+            await this.searchFirst(item);
+            state = this.searchState.get(txtPath);
+            if (!state) {
+                return;
+            }
+        }
+        if (state.indices.length === 0) {
+            vscode.window.showInformationMessage('未找到匹配内容');
+            return;
+        }
+        if (state.current > 0) {
+            state.current -= 1;
+            await this.jumpToOccurrence(item, state.indices[state.current]);
+            vscode.window.setStatusBarMessage(`已跳转到第 ${state.current + 1}/${state.indices.length} 处`, 2000);
+        } else {
+            vscode.window.showInformationMessage('已经是第一处');
+        }
+    }
+
+    async searchLast(item: GitRecordItem): Promise<void> {
+        if (!item.isReadingTxt) {
+            vscode.window.showInformationMessage('请先开始阅读TXT内容');
+            return;
+        }
+        const txtPath = item.associatedTxtPath;
+        if (!txtPath) {
+            return;
+        }
+        let state = this.searchState.get(txtPath);
+        if (!state) {
+            await this.searchFirst(item);
+            state = this.searchState.get(txtPath);
+            if (!state) {
+                return;
+            }
+        }
+        if (state.indices.length === 0) {
+            vscode.window.showInformationMessage('未找到匹配内容');
+            return;
+        }
+        state.current = state.indices.length - 1;
+        await this.jumpToOccurrence(item, state.indices[state.current]);
+        vscode.window.setStatusBarMessage(`已跳转到第 ${state.current + 1}/${state.indices.length} 处`, 2000);
     }
 } 

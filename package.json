@@ -85,6 +85,31 @@
         "category": "Oh My Git",
         "icon": "$(eye)"
       }
+      ,
+      {
+        "command": "ohmygit.searchFirst",
+        "title": "搜索：第一处",
+        "category": "Oh My Git",
+        "icon": "$(search)"
+      },
+      {
+        "command": "ohmygit.searchPrevious",
+        "title": "搜索：上一处",
+        "category": "Oh My Git",
+        "icon": "$(arrow-up)"
+      },
+      {
+        "command": "ohmygit.searchNext",
+        "title": "搜索：下一处",
+        "category": "Oh My Git",
+        "icon": "$(arrow-down)"
+      },
+      {
+        "command": "ohmygit.searchLast",
+        "title": "搜索：最后一处",
+        "category": "Oh My Git",
+        "icon": "$(search)"
+      }
     ],
     "keybindings": [
       {
@@ -115,6 +140,26 @@
       {
         "command": "ohmygit.toggleHiddenMode",
         "key": "cmd+h",
+        "when": "ohmygit.gitHistoryView"
+      },
+      {
+        "command": "ohmygit.searchFirst",
+        "key": "alt+f",
+        "when": "ohmygit.gitHistoryView"
+      },
+      {
+        "command": "ohmygit.searchPrevious",
+        "key": "shift+f3",
+        "when": "ohmygit.gitHistoryView"
+      },
+      {
+        "command": "ohmygit.searchNext",
+        "key": "f3",
+        "when": "ohmygit.gitHistoryView"
+      },
+      {
+        "command": "ohmygit.searchLast",
+        "key": "alt+shift+f3",
         "when": "ohmygit.gitHistoryView"
       }
     ],
@@ -167,6 +212,26 @@
           "command": "ohmygit.toggleHiddenMode",
           "when": "view == ohmygit.gitHistoryView",
           "group": "navigation@7"
+        },
+        {
+          "command": "ohmygit.searchFirst",
+          "when": "view == ohmygit.gitHistoryView",
+          "group": "navigation@8"
+        },
+        {
+          "command": "ohmygit.searchPrevious",
+          "when": "view == ohmygit.gitHistoryView",
+          "group": "navigation@9"
+        },
+        {
+          "command": "ohmygit.searchNext",
+          "when": "view == ohmygit.gitHistoryView",
+          "group": "navigation@10"
+        },
+        {
+          "command": "ohmygit.searchLast",
+          "when": "view == ohmygit.gitHistoryView",
+          "group": "navigation@11"
         }
       ]
     },
