@@ -2,7 +2,7 @@
   "name": "ohmygit",
   "displayName": "Oh My Git",
   "description": "在Git记录中内联显示TXT文件内容，支持翻页阅读",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -236,7 +236,7 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile && vsce package",
+    "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
