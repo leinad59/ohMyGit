@@ -219,17 +219,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
     );
 
-    const searchLastCommand = vscode.commands.registerCommand(
-        'ohmygit.searchLast',
-        async () => {
-            const currentItem = gitHistoryProvider.getCurrentReadingItem();
-            if (currentItem && currentItem.isReadingTxt) {
-                await gitHistoryProvider.searchLast(currentItem);
-            } else {
-                vscode.window.showInformationMessage('请先选择一个正在阅读的Git记录');
-            }
-        }
-    );
+
 
     // 将命令添加到上下文
     context.subscriptions.push(
@@ -249,8 +239,7 @@ export function activate(context: vscode.ExtensionContext) {
         toggleHiddenModeCommand,
         searchFirstCommand,
         searchPreviousCommand,
-        searchNextCommand,
-        searchLastCommand
+        searchNextCommand
     );
 
     // 监听配置变化

@@ -60,6 +60,9 @@ export class GitHistoryProvider implements vscode.TreeDataProvider<GitRecordItem
             vscode.TreeItemCollapsibleState.None
         );
 
+        // 设置上下文值以便于命令识别
+        treeItem.contextValue = 'ohmygit-tree-item';
+
         // 设置描述信息
         if (this.isHiddenMode) {
             // 在隐藏模式下，始终显示作者和时间
@@ -440,13 +443,16 @@ export class GitHistoryProvider implements vscode.TreeDataProvider<GitRecordItem
             vscode.window.showInformationMessage('未找到匹配内容');
             return;
         }
-        if (state.current < state.indices.length - 1) {
+        // 实现循环导航：如果在最后一处，则跳转到第一处
+        if (state.current >= state.indices.length - 1) {
+            state.current = 0;
+            await this.jumpToOccurrence(item, state.indices[state.current]);
+            vscode.window.showInformationMessage('已跳转到第一处（循环导航）');
+        } else {
             state.current += 1;
             await this.jumpToOccurrence(item, state.indices[state.current]);
-            vscode.window.setStatusBarMessage(`已跳转到第 ${state.current + 1}/${state.indices.length} 处`, 2000);
-        } else {
-            vscode.window.showInformationMessage('已经是最后一处');
         }
+        vscode.window.setStatusBarMessage(`已跳转到第 ${state.current + 1}/${state.indices.length} 处`, 2000);
     }
 
     async searchPrevious(item: GitRecordItem): Promise<void> {
@@ -470,38 +476,17 @@ export class GitHistoryProvider implements vscode.TreeDataProvider<GitRecordItem
             vscode.window.showInformationMessage('未找到匹配内容');
             return;
         }
-        if (state.current > 0) {
+        // 实现循环导航：如果在第一处，则跳转到最后一处
+        if (state.current <= 0) {
+            state.current = state.indices.length - 1;
+            await this.jumpToOccurrence(item, state.indices[state.current]);
+            vscode.window.showInformationMessage('已跳转到最后一处（循环导航）');
+        } else {
             state.current -= 1;
             await this.jumpToOccurrence(item, state.indices[state.current]);
-            vscode.window.setStatusBarMessage(`已跳转到第 ${state.current + 1}/${state.indices.length} 处`, 2000);
-        } else {
-            vscode.window.showInformationMessage('已经是第一处');
         }
-    }
-
-    async searchLast(item: GitRecordItem): Promise<void> {
-        if (!item.isReadingTxt) {
-            vscode.window.showInformationMessage('请先开始阅读TXT内容');
-            return;
-        }
-        const txtPath = item.associatedTxtPath;
-        if (!txtPath) {
-            return;
-        }
-        let state = this.searchState.get(txtPath);
-        if (!state) {
-            await this.searchFirst(item);
-            state = this.searchState.get(txtPath);
-            if (!state) {
-                return;
-            }
-        }
-        if (state.indices.length === 0) {
-            vscode.window.showInformationMessage('未找到匹配内容');
-            return;
-        }
-        state.current = state.indices.length - 1;
-        await this.jumpToOccurrence(item, state.indices[state.current]);
         vscode.window.setStatusBarMessage(`已跳转到第 ${state.current + 1}/${state.indices.length} 处`, 2000);
     }
+
+
 } 

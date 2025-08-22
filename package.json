@@ -88,7 +88,7 @@
       ,
       {
         "command": "ohmygit.searchFirst",
-        "title": "搜索：第一处",
+        "title": "搜索",
         "category": "Oh My Git",
         "icon": "$(search)"
       },
@@ -103,12 +103,6 @@
         "title": "搜索：下一处",
         "category": "Oh My Git",
         "icon": "$(arrow-down)"
-      },
-      {
-        "command": "ohmygit.searchLast",
-        "title": "搜索：最后一处",
-        "category": "Oh My Git",
-        "icon": "$(search)"
       }
     ],
     "keybindings": [
@@ -155,11 +149,6 @@
       {
         "command": "ohmygit.searchNext",
         "key": "f3",
-        "when": "ohmygit.gitHistoryView"
-      },
-      {
-        "command": "ohmygit.searchLast",
-        "key": "alt+shift+f3",
         "when": "ohmygit.gitHistoryView"
       }
     ],
@@ -227,11 +216,6 @@
           "command": "ohmygit.searchNext",
           "when": "view == ohmygit.gitHistoryView",
           "group": "navigation@10"
-        },
-        {
-          "command": "ohmygit.searchLast",
-          "when": "view == ohmygit.gitHistoryView",
-          "group": "navigation@11"
         }
       ]
     },
