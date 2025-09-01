@@ -69,7 +69,7 @@ export class GitHistoryProvider implements vscode.TreeDataProvider<GitRecordItem
             treeItem.description = `${element.author} - ${element.date.toLocaleDateString()}`;
         } else if (element.isReadingTxt && element.txtContent) {
             // 在正常模式下，如果正在阅读TXT则显示TXT内容
-            treeItem.description = `${element.txtContent} (${element.currentPage}/${element.totalPages})`;
+            treeItem.description = ` (${element.currentPage}/${element.totalPages})`;
         } else {
             // 在正常模式下，显示作者和时间
             treeItem.description = `${element.author} - ${element.date.toLocaleDateString()}`;
@@ -177,9 +177,9 @@ export class GitHistoryProvider implements vscode.TreeDataProvider<GitRecordItem
             return item.message;
         }
         
-        // 在正常模式下，如果正在阅读TXT则显示📖图标
-        if (item.isReadingTxt) {
-            return `📖`;
+        // 在正常模式下，如果正在阅读TXT则显示TXT内容
+        if (item.isReadingTxt && item.txtContent) {
+            return item.txtContent;
         }
         return item.message;
     }
