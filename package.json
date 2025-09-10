@@ -108,22 +108,22 @@
     "keybindings": [
       {
         "command": "ohmygit.nextPage",
-        "key": "ctrl+right",
+        "key": "right",
         "when": "ohmygit.gitHistoryView"
       },
       {
         "command": "ohmygit.previousPage",
-        "key": "ctrl+left",
+        "key": "left",
         "when": "ohmygit.gitHistoryView"
       },
       {
         "command": "ohmygit.nextPage",
-        "key": "cmd+right",
+        "key": "down",
         "when": "ohmygit.gitHistoryView"
       },
       {
         "command": "ohmygit.previousPage",
-        "key": "cmd+left",
+        "key": "up",
         "when": "ohmygit.gitHistoryView"
       },
       {

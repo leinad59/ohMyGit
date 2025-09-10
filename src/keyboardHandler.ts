@@ -48,10 +48,14 @@ export class KeyboardHandler {
         switch (key) {
             case 'ArrowRight':
             case 'Right':
+            case 'ArrowDown':
+            case 'Down':
                 this.nextPage();
                 break;
             case 'ArrowLeft':
             case 'Left':
+            case 'ArrowUp':
+            case 'Up':
                 this.previousPage();
                 break;
             case 'Escape':
