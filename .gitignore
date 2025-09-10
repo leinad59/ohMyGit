@@ -108,3 +108,6 @@ tmp/
 temp/ 
 
 *.local.*
+
+# Task documentation files
+Task_*.md
