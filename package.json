@@ -2,7 +2,7 @@
   "name": "ohmygit",
   "displayName": "Oh My Git",
   "description": "在Git记录中内联显示TXT文件内容，支持翻页阅读",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "engines": {
     "vscode": "^1.74.0"
   },
